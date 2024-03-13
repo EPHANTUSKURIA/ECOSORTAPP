@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "439806196844",
+    "project_id": "ecosort-app-d0332",
+    "storage_bucket": "ecosort-app-d0332.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:439806196844:android:fa3dcd9d7b00e105676c49",
+        "android_client_info": {
+          "package_name": "com.example.ecosortapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyByagWAaSFWDi55Nl6euD53MhiROKEQOfY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -2,13 +2,13 @@ package com.example.ecosortapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import android.content.Intent
+import android.os.Handler
 import com.example.ecosortapp.auth.Login
 import com.example.ecosortapp.databinding.ActivityMainBinding
 
 
-class Register : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityMainBinding
 
