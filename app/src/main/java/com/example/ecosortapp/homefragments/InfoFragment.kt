@@ -1,64 +1,96 @@
-package com.example.afyamkononi.fragments
+package com.example.ecosortapp.homefragments
 
-import android.app.Notification
-import android.app.ProgressDialog
-import android.net.Uri
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.ecosortapp.R
+import com.example.ecosortapp.adapter.InfoAdapter
 import com.example.ecosortapp.databinding.FragmentInfoBinding
+import com.example.ecosortapp.info.MoreInfo
+import com.example.ecosortapp.info.Upload_Info
+import com.example.ecosortapp.info.model.BlogData
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.database
 
 
-class InfoFragmentFragment : Fragment() {
+class InfoFragment : Fragment(), InfoAdapter.OnInfoClickListener {
+
     private lateinit var binding: FragmentInfoBinding
-    private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var progressDialog: ProgressDialog
-    private var infoUri: Uri? = null
-    private val TAG = "REQUEST ADD TAG"
-    lateinit var tvDate: TextView
-    lateinit var btnshowdatepicker: Button
 
-    private val selectImage = registerForActivityResult(ActivityResultContracts.GetContent()) {
-        infoUri = it
-        binding.selectImage.setImageURI(infoUri)
+    private lateinit var adapter: InfoAdapter
+    private lateinit var recyclerView: RecyclerView
+    private var blogArrayList = mutableListOf<BlogData>()
+
+    private lateinit var database: DatabaseReference
+    private lateinit var auth: FirebaseAuth
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+
+        binding = FragmentInfoBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        dataInitialize()
+        auth = FirebaseAuth.getInstance()
+
+        binding.FAB.setOnClickListener {
+            val intent = Intent(requireActivity(), Upload_Info::class.java)
+            startActivity(intent)
+        }
+
+        getInfo()
         val layoutManager = LinearLayoutManager(context)
-        recyclerView = view.findViewById(R.id.notificationsRecycler)
+        recyclerView = view.findViewById(R.id.infoRecycler)
         recyclerView.layoutManager = layoutManager
         recyclerView.setHasFixedSize(true)
-        adapter = NotificationAdapter(notificationArrayList, this)
+        adapter = InfoAdapter(blogArrayList, this)
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
     }
 
-    override fun onNotificationClick(notification: NotificationData, position: Int) {
-        Toast.makeText(requireActivity(), "Clicked", Toast.LENGTH_LONG).show()
+    override fun onInfoClick(info: BlogData, position: Int) {
+        val intent = Intent(requireActivity(), MoreInfo::class.java)
+        intent.putExtra("image", info.imageUrl.toString())
+        intent.putExtra("blogTitle", info.blogTitle)
+        intent.putExtra("blogContent", info.blogContent)
+        startActivity(intent)
     }
 
-    private fun dataInitialize(){
-        notificationArrayList = arrayListOf(
-            NotificationData("BMI Updated", "Your new Bmi is 23.4"),
-            NotificationData("New Scan", "New Injury scan"),
-            NotificationData("New Meeting", "You have a new meeting"),
-            NotificationData("Past Meeting", "Just attended this meeting"),
-            NotificationData("BMI Updated", "Your new Bmi is 23.4"),
-            NotificationData("New Scan", "New Injury scan"),
-            NotificationData("New Meeting", "You have a new meeting"),
-            NotificationData("Past Meeting", "Just attended this meeting")
-        )
-    }
+    @SuppressLint("NotifyDataSetChanged")
+    private fun getInfo() {
+        database = Firebase.database.reference
+        database.child("Blogs").get()
+            .addOnSuccessListener { dataSnapshot ->
+                for (jobSnapshot in dataSnapshot.children) {
+                    val id = jobSnapshot.child("id").getValue(String::class.java)
+                    val imageUrl = jobSnapshot.child("imageUrl").getValue(String::class.java)
+                    val blogTitle = jobSnapshot.child("blogTitle").getValue(String::class.java)
+                    val blogContent = jobSnapshot.child("blogContent").getValue(String::class.java)
+                    val uid = jobSnapshot.child("uid").getValue(String::class.java)
 
+                    if (id != null && imageUrl != null && blogTitle != null && blogContent != null && uid != null) {
+                        val blog = BlogData(id, uid, imageUrl, blogTitle, blogContent)
+                        blogArrayList.add(blog)
+                    }
+                }
+                adapter.notifyDataSetChanged()
+
+            }
+    }
 
 }

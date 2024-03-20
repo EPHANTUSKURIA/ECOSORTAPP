@@ -12,6 +12,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ECOSORTAPP"
         tools:targetApi="31">
+
+        <activity
+            android:name=".info.MoreInfo"
+            android:exported="false" />
+        <activity android:name=".info.Upload_Info"
+            android:exported="false" />
+        <activity android:name=".requests.Requests"
+            android:exported="false"/>
         <activity
             android:name=".auth.SignUp"
             android:exported="false" />
@@ -20,9 +28,6 @@
             android:exported="false" />
         <activity
             android:name=".auth.Login"
-            android:exported="false" />
-        <activity
-            android:name=".auth.Register"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

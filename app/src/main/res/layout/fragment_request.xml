@@ -41,6 +41,7 @@
 
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/allRequests"
                     android:layout_width="120dp"
                     android:layout_height="80dp"
                     android:layout_marginTop="20dp"
@@ -50,7 +51,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Successful Collections"
+                        android:text="All Collections"
                         android:textAppearance="@style/TextAppearance.AppCompat.Title"
                         android:textColor="@color/black" />
 
@@ -60,6 +61,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/incomingCollection"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -87,6 +89,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/passedCollection"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -104,7 +107,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Missed Collections"
+                        android:text="Passed Collections"
                         android:textAppearance="@style/TextAppearance.AppCompat.Title"
                         android:textColor="@color/black" />
 
@@ -149,7 +152,7 @@
                         app:hintTextColor="#1c6ba4">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/personMeet"
+                            android:id="@+id/client"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:drawableStart="@drawable/baseline_broadcast_on_personal_24"

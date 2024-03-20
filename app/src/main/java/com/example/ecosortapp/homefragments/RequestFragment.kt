@@ -5,10 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.ecosortapp.R
 import android.app.DatePickerDialog
 import android.app.ProgressDialog
 import android.app.TimePickerDialog
+import android.content.Intent
 import android.icu.util.Calendar
 import android.net.Uri
 import android.os.Build
@@ -19,6 +19,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import com.example.ecosortapp.databinding.FragmentRequestBinding
+import com.example.ecosortapp.requests.Requests
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -44,8 +45,6 @@ class RequestFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.N)
     private val calendar = Calendar.getInstance()
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -63,7 +62,10 @@ class RequestFragment : Fragment() {
         btnshowdatepicker.setOnClickListener {
             showDatePicker()
         }
-
+        binding.allRequests.setOnClickListener {
+            val intent = Intent(requireActivity(), Requests::class.java)
+            startActivity(intent)
+        }
         firebaseAuth = FirebaseAuth.getInstance()
 
         progressDialog = ProgressDialog(requireActivity())
@@ -98,7 +100,8 @@ class RequestFragment : Fragment() {
         }
 
     }
-    private var personMeet = ""
+
+    private var client = ""
     private var requestMail = ""
     private var weight = ""
     private var tvTime = ""
@@ -106,13 +109,15 @@ class RequestFragment : Fragment() {
 
     private fun validateData() {
         Log.d(TAG, "Validating Data")
-        personMeet = binding.personMeet.text.toString().trim()
+        client = binding.client.text.toString().trim()
         requestMail = binding.requestMail.text.toString().trim()
         weight = binding.weight.text.toString().trim()
         tvTime = binding.tvTime.text.toString().trim()
         tvSelectDate = binding.tvSelectDate.text.toString().trim()
 
-        if (personMeet.isEmpty()) {
+
+
+        if (client.isEmpty()) {
             Toast.makeText(requireActivity(), "Enter Name", Toast.LENGTH_SHORT).show()
         } else if (requestMail.isEmpty()) {
             Toast.makeText(requireActivity(), "Enter Email", Toast.LENGTH_SHORT).show()
@@ -124,18 +129,15 @@ class RequestFragment : Fragment() {
             Toast.makeText(requireActivity(), "Set the day", Toast.LENGTH_SHORT).show()
         } else {
             uploadrequestToStorage()
-            binding.personMeet.text?.clear()
+            binding.client.text?.clear()
             binding.requestMail.text?.clear()
             binding.weight.text?.clear()
         }
 
     }
 
-    private fun uploadrequestToStorage() {
-        TODO("Not yet implemented")
-    }
 
-    private fun requestCollectionToStorage() {
+    private fun uploadrequestToStorage() {
         Log.d(TAG, "Requesting")
         progressDialog.setMessage("Request Collection")
         progressDialog.show()
@@ -155,18 +157,19 @@ class RequestFragment : Fragment() {
             }
     }
 
+
     private fun requestColectionInfoToDb(uploadedImageUrl: String, timeStamp: Long) {
-
-    }
-
-    private fun uploadJobInfoToDb(uploadedImageUrl: String, timeStamp: Long) {
         val progressDialog = ProgressDialog(requireActivity())
         progressDialog.setMessage("Uploading data")
         val uid = FirebaseAuth.getInstance().uid
         val hashMap: HashMap<String, Any> = HashMap()
         hashMap["id"] = "$timeStamp"
         hashMap["uid"] = "$uid"
-        hashMap["name"] = "$personMeet"
+        hashMap["client"] = "$client"
+        hashMap["requestMail"] = "$requestMail"
+        hashMap["weight"] = "$weight"
+        hashMap["time"] = "$tvTime"
+        hashMap["tvSelectDate"] = "$tvSelectDate"
         hashMap["clientLocation"] = "$requestMail"
         hashMap["weight"] = "$weight"
         hashMap["time"] = "$tvTime"
@@ -194,11 +197,9 @@ class RequestFragment : Fragment() {
                 ).show()
 
             }
-
-
     }
 
-        @RequiresApi(Build.VERSION_CODES.N)
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun showDatePicker() {
         val datePickerDialog = DatePickerDialog(
             requireActivity(), { DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int ->
@@ -214,5 +215,9 @@ class RequestFragment : Fragment() {
         )
         datePickerDialog.show()
     }
-
 }
+
+
+
+
+
