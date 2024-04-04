@@ -19,6 +19,8 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import com.example.ecosortapp.databinding.FragmentRequestBinding
+import com.example.ecosortapp.requests.IncomingRequests
+import com.example.ecosortapp.requests.PassedRequests
 import com.example.ecosortapp.requests.Requests
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
@@ -29,15 +31,12 @@ import java.util.*
 
 class RequestFragment : Fragment() {
     private lateinit var binding: FragmentRequestBinding
-
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var progressDialog: ProgressDialog
     private var requestUri: Uri? = null
     private val TAG = "REQUEST ADD TAG"
-
     lateinit var tvDate: TextView
     lateinit var btnshowdatepicker: Button
-
     private val selectImage = registerForActivityResult(ActivityResultContracts.GetContent()) {
         requestUri = it
         binding.selectImage.setImageURI(requestUri)
@@ -52,7 +51,6 @@ class RequestFragment : Fragment() {
         binding = FragmentRequestBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -64,6 +62,17 @@ class RequestFragment : Fragment() {
         }
         binding.allRequests.setOnClickListener {
             val intent = Intent(requireActivity(), Requests::class.java)
+            startActivity(intent)
+        }
+
+        binding.incomingCollection.setOnClickListener {
+            val intent = Intent(requireActivity(), IncomingRequests::class.java)
+            startActivity(intent)
+        }
+
+
+        binding.passedCollection.setOnClickListener {
+            val intent = Intent(requireActivity(),  PassedRequests::class.java)
             startActivity(intent)
         }
         firebaseAuth = FirebaseAuth.getInstance()
@@ -156,7 +165,6 @@ class RequestFragment : Fragment() {
                 progressDialog.dismiss()
             }
     }
-
 
     private fun requestColectionInfoToDb(uploadedImageUrl: String, timeStamp: Long) {
         val progressDialog = ProgressDialog(requireActivity())

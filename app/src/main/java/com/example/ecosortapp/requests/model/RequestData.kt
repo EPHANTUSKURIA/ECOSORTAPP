@@ -8,5 +8,5 @@ data class RequestData(
     val weight : String? = "",
     val tvTime : String? = "",
     val tvSelectDate : String? = "",
-    val imageUrl : String? = ""
+    val imageUrl : String? = "",
 )

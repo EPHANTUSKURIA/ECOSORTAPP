@@ -13,7 +13,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.database
 
-class Requests : AppCompatActivity(), RequestsAdapter.OnRequestClickListener {
+class IncomingRequests : AppCompatActivity(), RequestsAdapter.OnRequestClickListener {
 
     private lateinit var binding: ActivityRequestsBinding
 
@@ -30,10 +30,10 @@ class Requests : AppCompatActivity(), RequestsAdapter.OnRequestClickListener {
 
         auth = FirebaseAuth.getInstance()
 
-        adapter = RequestsAdapter(requestArrayList, this@Requests)
+        adapter = RequestsAdapter(requestArrayList, this@IncomingRequests)
         binding.requestRecycler.apply {
-            layoutManager = LinearLayoutManager(this@Requests)
-            adapter = this@Requests.adapter
+            layoutManager = LinearLayoutManager(this@IncomingRequests)
+            adapter = this@IncomingRequests.adapter
         }
 
         getRequests()

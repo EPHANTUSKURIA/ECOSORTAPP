@@ -61,7 +61,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/incomingCollection"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -70,6 +69,7 @@
 
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/incomingCollection"
                     android:layout_width="120dp"
                     android:layout_height="80dp"
                     android:layout_marginTop="20dp"
@@ -89,7 +89,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/passedCollection"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -98,6 +97,7 @@
 
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/passedCollection"
                     android:layout_width="120dp"
                     android:layout_height="80dp"
                     android:layout_marginTop="20dp"
