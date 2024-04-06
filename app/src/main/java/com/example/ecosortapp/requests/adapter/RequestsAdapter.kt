@@ -18,7 +18,7 @@ class RequestsAdapter(
             with(binding) {
                 client.text = request.client
                 weight.text = request.weight
-                tvTime.text = request.tvTime
+                tvTime.text = request.tvTime.toString()
                 mtrlCalendarDaysOfWeek.text = request.tvSelectDate
 
                 root.setOnClickListener {

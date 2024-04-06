@@ -1,17 +1,19 @@
 package com.example.ecosortapp.homefragments
 
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
-import android.provider.ContactsContract.Profile
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import android.util.Log
-import android.content.ContentValues.TAG
-import com.example.ecosortapp.auth.model.UserData
+import com.example.ecosortapp.BlogsData
+import com.example.ecosortapp.CollectionData
 import com.example.ecosortapp.databinding.FragmentHomeBinding
+import com.example.ecosortapp.profile.ProfileActivity
+import com.example.ecosortapp.auth.model.UserData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
@@ -27,26 +29,30 @@ class HomeFragment : Fragment() {
     ): View {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-
         firebaseAuth = FirebaseAuth.getInstance()
         databaseReference = FirebaseDatabase.getInstance().reference.child("Blogs")
-
         fetchAndDisplayUserBlogPostsCount()
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
-
         // Fetch and display user name
         fetchAndDisplayUserName()
 
-
         binding.profilePicture.setOnClickListener{
-            val intent = Intent(requireActivity(), Profile::class.java)
+            val intent = Intent(requireActivity(), ProfileActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.CollectionData.setOnClickListener{
+            val intent = Intent(requireActivity(), CollectionData::class.java)
+            startActivity(intent)
+        }
+
+
+        binding.BlogData.setOnClickListener{
+            val intent = Intent(requireActivity(), BlogsData::class.java)
             startActivity(intent)
         }
 
@@ -119,3 +125,4 @@ class HomeFragment : Fragment() {
         }
     }
 }
+

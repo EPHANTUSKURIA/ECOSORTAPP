@@ -1,6 +1,5 @@
 package com.example.ecosortapp.requests
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -8,15 +7,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ecosortapp.databinding.ActivityRequestsBinding
 import com.example.ecosortapp.requests.adapter.RequestsAdapter
 import com.example.ecosortapp.requests.model.RequestData
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.database
+import com.google.firebase.database.*
 
 class IncomingRequests : AppCompatActivity(), RequestsAdapter.OnRequestClickListener {
 
     private lateinit var binding: ActivityRequestsBinding
-
     private lateinit var adapter: RequestsAdapter
     private lateinit var database: DatabaseReference
     private lateinit var auth: FirebaseAuth
@@ -36,7 +32,7 @@ class IncomingRequests : AppCompatActivity(), RequestsAdapter.OnRequestClickList
             adapter = this@IncomingRequests.adapter
         }
 
-        getRequests()
+        getIncomingRequests()
     }
 
     override fun onRequestClick(request: RequestData, position: Int) {
@@ -45,9 +41,14 @@ class IncomingRequests : AppCompatActivity(), RequestsAdapter.OnRequestClickList
         Toast.makeText(this, "Clicked", Toast.LENGTH_SHORT).show()
     }
 
-    private fun getRequests() {
-        database = Firebase.database.reference
-        database.child("Requests").get()
+    private fun getIncomingRequests() {
+        database = FirebaseDatabase.getInstance().reference
+        val currentTimeMillis = System.currentTimeMillis()
+
+        database.child("Requests")
+            .orderByChild("dateTime") // Assuming you have a field named "dateTime" representing the combined date and time
+            .startAt(currentTimeMillis.toDouble()) // Filter by current date and time
+            .get()
             .addOnSuccessListener { dataSnapshot ->
                 for (itemSnapshot in dataSnapshot.children) {
                     val id = itemSnapshot.child("id").getValue(String::class.java)
@@ -55,9 +56,11 @@ class IncomingRequests : AppCompatActivity(), RequestsAdapter.OnRequestClickList
                     val client = itemSnapshot.child("client").getValue(String::class.java)
                     val requestMail = itemSnapshot.child("requestMail").getValue(String::class.java)
                     val weight = itemSnapshot.child("weight").getValue(String::class.java)
-                    val time = itemSnapshot.child("time").getValue(String::class.java)
+                    val time = itemSnapshot.child("time").getValue(String::class.java) // Assuming dateTime is stored as a Unix timestamp
                     val tvSelectDate = itemSnapshot.child("tvSelectDate").getValue(String::class.java)
                     val uid = itemSnapshot.child("uid").getValue(String::class.java)
+
+                    // Add logic to filter based on date and time if needed
 
                     if (id != null && imageUrl != null && client != null && requestMail != null && uid != null && weight != null && time != null && tvSelectDate != null) {
                         val request = RequestData(id, uid, client, requestMail, weight, time, tvSelectDate, imageUrl)
@@ -66,5 +69,10 @@ class IncomingRequests : AppCompatActivity(), RequestsAdapter.OnRequestClickList
                 }
                 adapter.notifyDataSetChanged()
             }
+            .addOnFailureListener { exception ->
+                // Handle any errors
+                Toast.makeText(this@IncomingRequests, "Failed to retrieve data: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }
     }
+
 }

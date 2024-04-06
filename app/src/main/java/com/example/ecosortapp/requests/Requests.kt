@@ -1,6 +1,5 @@
 package com.example.ecosortapp.requests
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -60,7 +59,7 @@ class Requests : AppCompatActivity(), RequestsAdapter.OnRequestClickListener {
                     val uid = itemSnapshot.child("uid").getValue(String::class.java)
 
                     if (id != null && imageUrl != null && client != null && requestMail != null && uid != null && weight != null && time != null && tvSelectDate != null) {
-                        val request = RequestData(id, uid, client, requestMail, weight, time, tvSelectDate, imageUrl)
+                        val request = RequestData(id, uid, client, requestMail, weight, tvTime = null, tvSelectDate, imageUrl)
                         requestArrayList.add(request)
                     }
                 }

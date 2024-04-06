@@ -1,6 +1,5 @@
 package com.example.ecosortapp.requests
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -8,15 +7,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ecosortapp.databinding.ActivityRequestsBinding
 import com.example.ecosortapp.requests.adapter.RequestsAdapter
 import com.example.ecosortapp.requests.model.RequestData
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.database
+import com.google.firebase.database.*
 
 class PassedRequests : AppCompatActivity(), RequestsAdapter.OnRequestClickListener {
 
     private lateinit var binding: ActivityRequestsBinding
-
     private lateinit var adapter: RequestsAdapter
     private lateinit var database: DatabaseReference
     private lateinit var auth: FirebaseAuth
@@ -36,7 +32,7 @@ class PassedRequests : AppCompatActivity(), RequestsAdapter.OnRequestClickListen
             adapter = this@PassedRequests.adapter
         }
 
-        getRequests()
+        getPassedRequests()
     }
 
     override fun onRequestClick(request: RequestData, position: Int) {
@@ -45,9 +41,14 @@ class PassedRequests : AppCompatActivity(), RequestsAdapter.OnRequestClickListen
         Toast.makeText(this, "Clicked", Toast.LENGTH_SHORT).show()
     }
 
-    private fun getRequests() {
-        database = Firebase.database.reference
-        database.child("Requests").get()
+    private fun getPassedRequests() {
+        database = FirebaseDatabase.getInstance().reference
+        val currentTimeMillis = System.currentTimeMillis()
+
+        database.child("Requests")
+            .orderByChild("time")
+            .startAt(currentTimeMillis.toDouble())
+            .get()
             .addOnSuccessListener { dataSnapshot ->
                 for (itemSnapshot in dataSnapshot.children) {
                     val id = itemSnapshot.child("id").getValue(String::class.java)
@@ -66,5 +67,10 @@ class PassedRequests : AppCompatActivity(), RequestsAdapter.OnRequestClickListen
                 }
                 adapter.notifyDataSetChanged()
             }
+            .addOnFailureListener { exception ->
+                // Handle any errors
+                Toast.makeText(this@PassedRequests, "Failed to retrieve data: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 }
+

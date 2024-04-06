@@ -1,10 +1,5 @@
 package com.example.ecosortapp.homefragments
 
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.app.DatePickerDialog
 import android.app.ProgressDialog
 import android.app.TimePickerDialog
@@ -12,12 +7,17 @@ import android.content.Intent
 import android.icu.util.Calendar
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
 import com.example.ecosortapp.databinding.FragmentRequestBinding
 import com.example.ecosortapp.requests.IncomingRequests
 import com.example.ecosortapp.requests.PassedRequests
@@ -34,9 +34,9 @@ class RequestFragment : Fragment() {
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var progressDialog: ProgressDialog
     private var requestUri: Uri? = null
-    private val TAG = "REQUEST ADD TAG"
-    lateinit var tvDate: TextView
-    lateinit var btnshowdatepicker: Button
+    private val TAG = "REQUEST_ADD_TAG"
+    private lateinit var tvDate: TextView
+    private lateinit var btnShowDatePicker: Button
     private val selectImage = registerForActivityResult(ActivityResultContracts.GetContent()) {
         requestUri = it
         binding.selectImage.setImageURI(requestUri)
@@ -44,6 +44,11 @@ class RequestFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.N)
     private val calendar = Calendar.getInstance()
+
+    private var client = ""
+    private var requestMail = ""
+    private var weight = ""
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -51,30 +56,30 @@ class RequestFragment : Fragment() {
         binding = FragmentRequestBinding.inflate(inflater, container, false)
         return binding.root
     }
+
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        tvDate = binding.tvSelectDate
-        btnshowdatepicker = binding.btnshowDatePicker
 
-        btnshowdatepicker.setOnClickListener {
+        tvDate = binding.tvSelectDate
+        btnShowDatePicker = binding.btnshowDatePicker
+
+        btnShowDatePicker.setOnClickListener {
             showDatePicker()
         }
+
         binding.allRequests.setOnClickListener {
-            val intent = Intent(requireActivity(), Requests::class.java)
-            startActivity(intent)
+            startActivity(Intent(requireActivity(), Requests::class.java))
         }
 
         binding.incomingCollection.setOnClickListener {
-            val intent = Intent(requireActivity(), IncomingRequests::class.java)
-            startActivity(intent)
+            startActivity(Intent(requireActivity(), IncomingRequests::class.java))
         }
-
 
         binding.passedCollection.setOnClickListener {
-            val intent = Intent(requireActivity(),  PassedRequests::class.java)
-            startActivity(intent)
+            startActivity(Intent(requireActivity(), PassedRequests::class.java))
         }
+
         firebaseAuth = FirebaseAuth.getInstance()
 
         progressDialog = ProgressDialog(requireActivity())
@@ -93,8 +98,8 @@ class RequestFragment : Fragment() {
         val tvTime = binding.tvTime
 
         btnPickTime.setOnClickListener {
-            val cal = java.util.Calendar.getInstance()
-            val timeSetListener = TimePickerDialog.OnTimeSetListener { timePicker, hour, minute ->
+            val cal = Calendar.getInstance()
+            val timeSetListener = TimePickerDialog.OnTimeSetListener { _, hour, minute ->
                 cal.set(Calendar.HOUR_OF_DAY, hour)
                 cal.set(Calendar.HOUR_OF_DAY, minute)
                 tvTime.text = SimpleDateFormat("HH:mm").format(cal.time)
@@ -107,24 +112,15 @@ class RequestFragment : Fragment() {
                 true
             ).show()
         }
-
     }
-
-    private var client = ""
-    private var requestMail = ""
-    private var weight = ""
-    private var tvTime = ""
-    private var tvSelectDate = ""
 
     private fun validateData() {
         Log.d(TAG, "Validating Data")
         client = binding.client.text.toString().trim()
         requestMail = binding.requestMail.text.toString().trim()
         weight = binding.weight.text.toString().trim()
-        tvTime = binding.tvTime.text.toString().trim()
-        tvSelectDate = binding.tvSelectDate.text.toString().trim()
-
-
+        val tvTime = binding.tvTime.text.toString().trim()
+        val tvSelectDate = binding.tvSelectDate.text.toString().trim()
 
         if (client.isEmpty()) {
             Toast.makeText(requireActivity(), "Enter Name", Toast.LENGTH_SHORT).show()
@@ -137,16 +133,14 @@ class RequestFragment : Fragment() {
         } else if (tvSelectDate.isEmpty()) {
             Toast.makeText(requireActivity(), "Set the day", Toast.LENGTH_SHORT).show()
         } else {
-            uploadrequestToStorage()
+            uploadRequestToStorage(tvTime, tvSelectDate)
             binding.client.text?.clear()
             binding.requestMail.text?.clear()
             binding.weight.text?.clear()
         }
-
     }
 
-
-    private fun uploadrequestToStorage() {
+    private fun uploadRequestToStorage(iso8601Time: String?, iso8601Date: String?) {
         Log.d(TAG, "Requesting")
         progressDialog.setMessage("Request Collection")
         progressDialog.show()
@@ -160,29 +154,32 @@ class RequestFragment : Fragment() {
                 while (!uriask.isSuccessful);
                 val uploadedImageUrl = "${uriask.result}"
 
-                requestColectionInfoToDb(uploadedImageUrl, timeStamp)
+                requestCollectionInfoToDb(uploadedImageUrl, timeStamp, iso8601Time, iso8601Date)
 
                 progressDialog.dismiss()
             }
     }
 
-    private fun requestColectionInfoToDb(uploadedImageUrl: String, timeStamp: Long) {
+    private fun requestCollectionInfoToDb(
+        uploadedImageUrl: String,
+        timeStamp: Long,
+        iso8601Time: String?,
+        iso8601Date: String?
+    ) {
         val progressDialog = ProgressDialog(requireActivity())
         progressDialog.setMessage("Uploading data")
         val uid = FirebaseAuth.getInstance().uid
         val hashMap: HashMap<String, Any> = HashMap()
         hashMap["id"] = "$timeStamp"
         hashMap["uid"] = "$uid"
-        hashMap["client"] = "$client"
-        hashMap["requestMail"] = "$requestMail"
-        hashMap["weight"] = "$weight"
-        hashMap["time"] = "$tvTime"
-        hashMap["tvSelectDate"] = "$tvSelectDate"
-        hashMap["clientLocation"] = "$requestMail"
-        hashMap["weight"] = "$weight"
-        hashMap["time"] = "$tvTime"
-        hashMap["requestDescription"] = "$tvSelectDate"
-        hashMap["imageUrl"] = "$uploadedImageUrl"
+        hashMap["client"] = client
+        hashMap["requestMail"] = requestMail
+        hashMap["weight"] = weight
+        hashMap["time"] = iso8601Time ?:""
+        hashMap["tvSelectDate"] = iso8601Date ?:""
+        hashMap["clientLocation"] = requestMail
+        hashMap["requestDescription"] = iso8601Date ?:""
+        hashMap["imageUrl"] = uploadedImageUrl
 
         val ref = FirebaseDatabase.getInstance().getReference("Requests")
         ref.child("$timeStamp")
@@ -210,12 +207,12 @@ class RequestFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.N)
     private fun showDatePicker() {
         val datePickerDialog = DatePickerDialog(
-            requireActivity(), { DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int ->
+            requireActivity(), { _, year: Int, monthOfYear: Int, dayOfMonth: Int ->
                 val selectedDate = Calendar.getInstance()
                 selectedDate.set(year, monthOfYear, dayOfMonth)
                 val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                 val formattedDate: String = dateFormat.format(selectedDate.time)
-                tvDate.text = "Selected Date is  : " + formattedDate
+                tvDate.text = "Selected Date is  : $formattedDate"
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
@@ -224,6 +221,7 @@ class RequestFragment : Fragment() {
         datePickerDialog.show()
     }
 }
+
 
 
 

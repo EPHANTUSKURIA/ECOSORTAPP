@@ -1,36 +1,35 @@
 package com.example.ecosortapp.profile
 
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.content.Intent
+import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.ecosortapp.auth.Login
-import com.example.ecosortapp.databinding.ActivityProfileBinding
+import com.example.ecosortapp.databinding.ActivityProfilePageBinding
 import com.example.ecosortapp.auth.model.UserData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
-class Profile : AppCompatActivity() {
-    private lateinit var binding: ActivityProfileBinding
+class ProfileActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityProfilePageBinding
     private lateinit var database: DatabaseReference
     private lateinit var auth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Inflate the layout for this activity
-        binding = ActivityProfileBinding.inflate(layoutInflater)
+        binding = ActivityProfilePageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Initialize Firebase Auth and Database Reference
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().getReference("registeredUser")
         getData()
 
-        // Set up logout button click listener
         binding.btnLogout.setOnClickListener {
             logout()
         }
     }
+
     private fun getData() {
         val uid = auth.currentUser?.uid
         if (uid.isNullOrEmpty()) {
@@ -55,7 +54,7 @@ class Profile : AppCompatActivity() {
                     }
                 } else {
                     // User data not found
-                    Toast.makeText(this@Profile, "User data not found", Toast.LENGTH_SHORT)
+                    Toast.makeText(this@ProfileActivity, "User data not found", Toast.LENGTH_SHORT)
                         .show()
                 }
             }
@@ -63,7 +62,7 @@ class Profile : AppCompatActivity() {
             override fun onCancelled(error: DatabaseError) {
                 // Error fetching user data
                 Log.e(TAG, "Failed to fetch user data: ${error.message}")
-                Toast.makeText(this@Profile, "Failed to fetch user data", Toast.LENGTH_SHORT)
+                Toast.makeText(this@ProfileActivity, "Failed to fetch user data", Toast.LENGTH_SHORT)
                     .show()
             }
         })
@@ -81,12 +80,6 @@ class Profile : AppCompatActivity() {
     companion object {
         private const val TAG = "ProfileActivity"
     }
-
-
 }
-
-
-
-
 
 
