@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".auth.Login">
+    tools:context=".admin.auth.AdminLogin">
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="170dp"
+        android:layout_height="130dp"
         android:layout_marginTop="10dp"
         android:src="@drawable/logo"
         />
@@ -91,22 +93,23 @@
 
 
     <Button
-        android:id="@+id/btnLogin"
+        android:id="@+id/btnLoginAsAdmin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Login"
+        android:text="Login As Admin"
         android:layout_marginTop="10dp"
         android:backgroundTint="#83BB6F"
         android:layout_marginHorizontal="100dp"
         />
 
 
+
     <Button
-        android:id="@+id/btnLoginAsAdmin"
+        android:id="@+id/btnLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Login As Admin"
-        android:layout_marginTop="10dp"
+        android:text="Login as Client"
+        android:layout_marginTop="20dp"
         android:backgroundTint="#83BB6F"
         android:layout_marginHorizontal="100dp"
         />
@@ -122,7 +125,7 @@
         />
 
     <TextView
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="40dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="New User?"
@@ -137,4 +140,5 @@
         android:backgroundTint="#83BB6F"
         android:layout_marginHorizontal="100dp"
         />
+
 </LinearLayout>

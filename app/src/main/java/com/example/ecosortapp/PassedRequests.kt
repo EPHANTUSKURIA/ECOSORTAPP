@@ -8,6 +8,12 @@ import com.example.ecosortapp.databinding.ActivityRequestsBinding
 import com.example.ecosortapp.requests.adapter.RequestsAdapter
 import com.example.ecosortapp.requests.model.RequestData
 import com.google.firebase.auth.FirebaseAuth
+import java.text.SimpleDateFormat
+import java.util.Date
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.*
 
 class PassedRequests : AppCompatActivity(), RequestsAdapter.OnRequestClickListener {
@@ -56,13 +62,19 @@ class PassedRequests : AppCompatActivity(), RequestsAdapter.OnRequestClickListen
                     val client = itemSnapshot.child("client").getValue(String::class.java)
                     val requestMail = itemSnapshot.child("requestMail").getValue(String::class.java)
                     val weight = itemSnapshot.child("weight").getValue(String::class.java)
-                    val time = itemSnapshot.child("time").getValue(String::class.java)
+                    val timeString = itemSnapshot.child("time").getValue(String::class.java)
                     val tvSelectDate = itemSnapshot.child("tvSelectDate").getValue(String::class.java)
                     val uid = itemSnapshot.child("uid").getValue(String::class.java)
 
-                    if (id != null && imageUrl != null && client != null && requestMail != null && uid != null && weight != null && time != null && tvSelectDate != null) {
-                        val request = RequestData(id, uid, client, requestMail, weight, time, tvSelectDate, imageUrl)
-                        requestArrayList.add(request)
+                    // Parsing timeString to milliseconds since epoch
+                    val requestTimeMillis = parseTimeStringToMillis(timeString)
+
+                    if (requestTimeMillis <= currentTimeMillis) {
+                        // Request is in the future or present, add it to the list
+                        if (id != null && imageUrl != null && client != null && requestMail != null && uid != null && weight != null && timeString != null && tvSelectDate != null) {
+                            val request = RequestData(id, uid, client, requestMail, weight, timeString, tvSelectDate, imageUrl)
+                            requestArrayList.add(request)
+                        }
                     }
                 }
                 adapter.notifyDataSetChanged()
@@ -72,5 +84,19 @@ class PassedRequests : AppCompatActivity(), RequestsAdapter.OnRequestClickListen
                 Toast.makeText(this@PassedRequests, "Failed to retrieve data: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
     }
+
+    private fun parseTimeStringToMillis(timeString: String?): Long {
+        if (timeString == null || timeString.isEmpty()) {
+            return 0
+        }
+        val parts = timeString.split(":")
+        if (parts.size != 2) {
+            throw IllegalArgumentException("Invalid time format: $timeString")
+        }
+        val hours = parts[0].toLong()
+        val minutes = parts[1].toLong()
+        return hours * 60 * 60 * 1000 + minutes * 60 * 1000
+    }
+
 }
 

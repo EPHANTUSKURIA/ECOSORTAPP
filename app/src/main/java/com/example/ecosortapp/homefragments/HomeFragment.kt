@@ -11,8 +11,10 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.ecosortapp.BlogsData
 import com.example.ecosortapp.CollectionData
+import com.example.ecosortapp.ML.ScanResult
+import com.example.ecosortapp.Maps
+import com.example.ecosortapp.Profile
 import com.example.ecosortapp.databinding.FragmentHomeBinding
-import com.example.ecosortapp.profile.ProfileActivity
 import com.example.ecosortapp.auth.model.UserData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -41,7 +43,17 @@ class HomeFragment : Fragment() {
         fetchAndDisplayUserName()
 
         binding.profilePicture.setOnClickListener{
-            val intent = Intent(requireActivity(), ProfileActivity::class.java)
+            val intent = Intent(requireActivity(), Profile::class.java)
+            startActivity(intent)
+        }
+
+        binding.btnMap.setOnClickListener{
+            val intent = Intent(requireActivity(), Maps::class.java)
+            startActivity(intent)
+        }
+
+        binding.machinelearning.setOnClickListener{
+            val intent = Intent(requireActivity(), ScanResult::class.java)
             startActivity(intent)
         }
 

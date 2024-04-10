@@ -4,17 +4,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/main">
 
     <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        tools:context=".auth.SignUp">
+        tools:context=".admin.auth.AdminRegister">
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="80dp"
         android:src="@drawable/logo"
         />
 
@@ -28,7 +29,7 @@
         />
 
     <TextView
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Name"
@@ -38,7 +39,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_marginVertical="10dp"
+        android:layout_marginVertical="5dp"
         app:boxStrokeColor="#FF35BF3B"
         app:hintTextColor="#FF35BF3B"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -54,7 +55,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Email"
@@ -64,7 +65,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_marginVertical="10dp"
+        android:layout_marginVertical="5dp"
         app:boxStrokeColor="#4CAF50"
         app:hintTextColor="#4CAF50"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -80,7 +81,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Phone"
@@ -90,7 +91,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_marginVertical="10dp"
+        android:layout_marginVertical="5dp"
         app:boxStrokeColor="#4CAF50"
         app:hintTextColor="#4CAF50"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -109,7 +110,7 @@
 
 
     <TextView
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Password"
@@ -119,7 +120,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_marginVertical="10dp"
+        android:layout_marginVertical="5dp"
         android:layout_marginHorizontal="30dp"
         app:boxStrokeColor="#4CAF50"
         app:hintTextColor="#4CAF50"
@@ -136,7 +137,7 @@
 
     </com.google.android.material.textfield.TextInputLayout>
     <TextView
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Confirm Password"
@@ -146,7 +147,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_marginVertical="10dp"
+        android:layout_marginVertical="5dp"
         android:layout_marginHorizontal="30dp"
         app:boxStrokeColor="#4CAF50"
         app:hintTextColor="#4CAF50"
@@ -165,6 +166,15 @@
 
 
     <Button
+        android:id="@+id/btnRegisterAsAdmin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sign Up As Admin"
+        android:backgroundTint="#83BB6F"
+        android:layout_marginHorizontal="100dp"
+        />
+
+    <Button
         android:id="@+id/btnRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -174,14 +184,6 @@
         />
 
 
-    <Button
-        android:id="@+id/btnRegisterAsAdmin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Sign Up As Admin"
-        android:backgroundTint="#83BB6F"
-        android:layout_marginHorizontal="100dp"
-        />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -215,5 +217,5 @@
         />
 
 
-</LinearLayout>
+    </LinearLayout>
 </ScrollView>

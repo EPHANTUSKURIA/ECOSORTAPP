@@ -1,45 +1,50 @@
-package com.example.ecosortapp.auth
+package com.example.ecosortapp.admin.auth
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.example.ecosortapp.Home
 import com.example.ecosortapp.R
-import com.example.ecosortapp.admin.auth.AdminLogin
-import com.example.ecosortapp.databinding.ActivityLoginBinding
+import com.example.ecosortapp.admin.home.AdmiHome
+import com.example.ecosortapp.auth.Login
+import com.example.ecosortapp.auth.SignUp
+import com.example.ecosortapp.databinding.ActivityAdminLoginBinding
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 
-class Login : AppCompatActivity() {
-    private lateinit var binding: ActivityLoginBinding
+class AdminLogin : AppCompatActivity() {
+    private lateinit var binding : ActivityAdminLoginBinding
     private lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
-        binding = ActivityLoginBinding.inflate(layoutInflater)
+        binding = ActivityAdminLoginBinding.inflate(layoutInflater)
         supportActionBar?.hide()
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
 
-        binding.btnLogin.setOnClickListener {
+        binding.btnLoginAsAdmin.setOnClickListener {
             registerEvents()
         }
 
-        binding.btnRegister.setOnClickListener {
-            startActivity(Intent(this, SignUp::class.java))
-            finish()
+
+        binding.btnLogin.setOnClickListener {
+            startActivity(Intent(this, Login::class.java))
         }
 
-        binding.btnLoginAsAdmin.setOnClickListener {
-            startActivity(Intent(this, AdminLogin::class.java))
-            finish()
+
+        binding.btnRegister.setOnClickListener {
+            startActivity(Intent(this, SignUp::class.java))
         }
 
     }
 
     private fun registerEvents() {
         auth = FirebaseAuth.getInstance()
-        binding.btnLogin.setOnClickListener {
+        binding.btnLoginAsAdmin.setOnClickListener {
             val email = binding.emailEt.text.toString().trim()
             val pass = binding.passEt.text.toString().trim()
 
@@ -60,7 +65,7 @@ class Login : AppCompatActivity() {
                                 .show()
                         }
                         if (email.isNotEmpty() && pass.isNotEmpty()) {
-                            startActivity(Intent(this, Home::class.java))
+                            startActivity(Intent(this, AdmiHome::class.java))
                             finish()
                         } else {
                             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT)

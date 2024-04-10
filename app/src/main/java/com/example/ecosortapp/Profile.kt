@@ -1,24 +1,31 @@
-package com.example.ecosortapp.profile
+package com.example.ecosortapp
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.example.ecosortapp.auth.Login
-import com.example.ecosortapp.databinding.ActivityProfilePageBinding
 import com.example.ecosortapp.auth.model.UserData
+import com.example.ecosortapp.databinding.ActivityProfileBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
-class ProfileActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityProfilePageBinding
+class Profile : AppCompatActivity() {
+    private lateinit var binding : ActivityProfileBinding
     private lateinit var database: DatabaseReference
     private lateinit var auth: FirebaseAuth
-
     override fun onCreate(savedInstanceState: Bundle?) {
+        binding = ActivityProfileBinding.inflate(layoutInflater)
+        supportActionBar?.hide()
         super.onCreate(savedInstanceState)
-        binding = ActivityProfilePageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         auth = FirebaseAuth.getInstance()
@@ -28,6 +35,7 @@ class ProfileActivity : AppCompatActivity() {
         binding.btnLogout.setOnClickListener {
             logout()
         }
+
     }
 
     private fun getData() {
@@ -48,13 +56,13 @@ class ProfileActivity : AppCompatActivity() {
                     val userData = snapshot.getValue(UserData::class.java)
                     userData?.let {
                         // Update UI with user data
-                        binding.userName.text = it.name
-                        binding.userEmail.text = it.email
-                        binding.userPhone.text = it.phone
+                        binding.etName.text = it.name
+                        binding.etEmail.text = it.email
+                        binding.etPhoneNumber.text = it.phone
                     }
                 } else {
                     // User data not found
-                    Toast.makeText(this@ProfileActivity, "User data not found", Toast.LENGTH_SHORT)
+                    Toast.makeText(this@Profile, "User data not found", Toast.LENGTH_SHORT)
                         .show()
                 }
             }
@@ -62,7 +70,7 @@ class ProfileActivity : AppCompatActivity() {
             override fun onCancelled(error: DatabaseError) {
                 // Error fetching user data
                 Log.e(TAG, "Failed to fetch user data: ${error.message}")
-                Toast.makeText(this@ProfileActivity, "Failed to fetch user data", Toast.LENGTH_SHORT)
+                Toast.makeText(this@Profile, "Failed to fetch user data", Toast.LENGTH_SHORT)
                     .show()
             }
         })
@@ -74,12 +82,10 @@ class ProfileActivity : AppCompatActivity() {
         val intent = Intent(this, Login::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
-        finish()
+        this.finish()
     }
 
     companion object {
-        private const val TAG = "ProfileActivity"
+        private const val TAG = "ProfileFragment"
     }
 }
-
-

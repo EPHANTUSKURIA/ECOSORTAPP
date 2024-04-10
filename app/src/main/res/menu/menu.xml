@@ -5,6 +5,10 @@
         android:icon="@drawable/baseline_home_24"
         android:title="Home" />
     <item
+        android:id="@+id/iclist"
+        android:icon="@drawable/baseline_cleaning_services_24"
+        android:title="Collectors" />
+    <item
         android:id="@+id/icJob"
         android:icon="@drawable/baseline_request_page_24"
         android:title="Requests" />

@@ -9,4 +9,5 @@ data class RequestData(
     val tvTime: String? = "",
     val tvSelectDate: String? = "",
     val imageUrl: String? = "",
+    val collectorId : String = ""
 )

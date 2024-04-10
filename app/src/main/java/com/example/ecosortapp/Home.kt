@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import com.example.ecosortapp.databinding.ActivityHomeBinding
 import com.example.ecosortapp.homefragments.HomeFragment
 import com.example.ecosortapp.homefragments.InfoFragment
+import com.example.ecosortapp.homefragments.ListFragment
 import com.example.ecosortapp.homefragments.RequestFragment
 
 class Home : AppCompatActivity() {
@@ -18,11 +19,18 @@ class Home : AppCompatActivity() {
         setContentView(binding.root)
 
         replaceFragment(HomeFragment())
+
+        // Check if the intent contains the extra to navigate directly to the ScheduleFragment
+        if (intent.getBooleanExtra("navigateToScheduleFragment", false)) {
+            replaceFragment(RequestFragment())
+        }
+
         binding.bottomNavigationView.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.icShop -> replaceFragment(HomeFragment())
                 R.id.icJob -> replaceFragment(RequestFragment())
                 R.id.icCategories -> replaceFragment(InfoFragment())
+                R.id.iclist -> replaceFragment(ListFragment())
 
                 else -> {
                 }

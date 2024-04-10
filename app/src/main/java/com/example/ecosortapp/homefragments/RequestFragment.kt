@@ -32,6 +32,8 @@ import java.util.*
 class RequestFragment : Fragment() {
     private lateinit var binding: FragmentRequestBinding
     private lateinit var firebaseAuth: FirebaseAuth
+    private var collectorId = ""
+
     private lateinit var progressDialog: ProgressDialog
     private var requestUri: Uri? = null
     private val TAG = "REQUEST_ADD_TAG"
@@ -41,6 +43,7 @@ class RequestFragment : Fragment() {
         requestUri = it
         binding.selectImage.setImageURI(requestUri)
     }
+
 
     @RequiresApi(Build.VERSION_CODES.N)
     private val calendar = Calendar.getInstance()
@@ -60,6 +63,12 @@ class RequestFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        firebaseAuth = FirebaseAuth.getInstance()
+
+        collectorId = requireActivity().intent.getStringExtra("id").toString()
+        println("Collector id is: $collectorId")
+
 
         tvDate = binding.tvSelectDate
         btnShowDatePicker = binding.btnshowDatePicker
@@ -180,6 +189,7 @@ class RequestFragment : Fragment() {
         hashMap["clientLocation"] = requestMail
         hashMap["requestDescription"] = iso8601Date ?:""
         hashMap["imageUrl"] = uploadedImageUrl
+        hashMap["collectorId"] = "$collectorId"
 
         val ref = FirebaseDatabase.getInstance().getReference("Requests")
         ref.child("$timeStamp")
@@ -203,7 +213,6 @@ class RequestFragment : Fragment() {
 
             }
     }
-
     @RequiresApi(Build.VERSION_CODES.N)
     private fun showDatePicker() {
         val datePickerDialog = DatePickerDialog(

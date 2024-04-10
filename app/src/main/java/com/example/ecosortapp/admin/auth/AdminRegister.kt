@@ -1,4 +1,4 @@
-package com.example.ecosortapp.auth
+package com.example.ecosortapp.admin.auth
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,21 +9,17 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.ecosortapp.Home
 import com.example.ecosortapp.R
-import com.example.ecosortapp.admin.auth.AdminRegister
-import com.example.ecosortapp.databinding.ActivityLoginBinding
-import com.example.ecosortapp.databinding.ActivitySignUpBinding
-import com.google.android.gms.tasks.OnCompleteListener
+import com.example.ecosortapp.admin.home.AdmiHome
+import com.example.ecosortapp.auth.SignUp
+import com.example.ecosortapp.databinding.ActivityAdminRegisterBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
-class SignUp : AppCompatActivity() {
-    private lateinit var binding: ActivitySignUpBinding
+class AdminRegister : AppCompatActivity() {
+    private lateinit var binding : ActivityAdminRegisterBinding
     private lateinit var auth: FirebaseAuth
-    private lateinit var database: DatabaseReference
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        binding = ActivitySignUpBinding.inflate(layoutInflater)
+        binding = ActivityAdminRegisterBinding.inflate(layoutInflater)
         supportActionBar?.hide()
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -33,20 +29,15 @@ class SignUp : AppCompatActivity() {
 
         binding.btnLogin.setOnClickListener {
             startActivity(Intent(this, SignUp::class.java))
-            finish()
         }
 
-        binding.btnRegisterAsAdmin.setOnClickListener {
-            startActivity(Intent(this, AdminRegister::class.java))
-            finish()
-        }
     }
 
     private var email = ""
     private var user = ""
     private var phone = ""
     private fun registerEvents() {
-        binding.btnRegister.setOnClickListener {
+        binding.btnRegisterAsAdmin.setOnClickListener {
             email = binding.userEmail.text.toString().trim()
             user = binding.userName.text.toString().trim()
             phone = binding.userPhone.text.toString().trim()
@@ -68,7 +59,7 @@ class SignUp : AppCompatActivity() {
                                 "Registration successful",
                                 Toast.LENGTH_SHORT
                             ).show()
-                            startActivity(Intent(this, Home::class.java))
+                            startActivity(Intent(this, AdmiHome::class.java))
                             finish()
 
 
@@ -107,7 +98,7 @@ class SignUp : AppCompatActivity() {
         hashMap["email"] = "$email"
         hashMap["phone"] = "$phone"
 
-        val ref = FirebaseDatabase.getInstance().getReference("registeredUser")
+        val ref = FirebaseDatabase.getInstance().getReference("registeredAdmins")
         ref.child("$uid")
             .setValue(hashMap)
             .addOnSuccessListener {
